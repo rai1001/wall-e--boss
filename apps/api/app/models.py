@@ -1,0 +1,53 @@
+import enum
+from datetime import datetime, date
+
+from sqlalchemy import Column, Date, DateTime, Enum, Integer, String, JSON, Boolean
+
+from .db import Base
+
+
+class Priority(str, enum.Enum):
+    VIP = "VIP"
+    Important = "Important"
+    Normal = "Normal"
+
+
+class TaskStatus(str, enum.Enum):
+    pending = "pending"
+    in_progress = "in_progress"
+    done = "done"
+
+
+class Task(Base):
+    __tablename__ = "tasks"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String(255), nullable=False)
+    priority = Column(Enum(Priority), nullable=False, default=Priority.Normal)
+    tags = Column(JSON, default=list)
+    due_date = Column(Date, nullable=True)
+    status = Column(Enum(TaskStatus), nullable=False, default=TaskStatus.pending)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+
+
+class Event(Base):
+    __tablename__ = "events"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String(255), nullable=False)
+    start_time = Column(DateTime, nullable=False)
+    end_time = Column(DateTime, nullable=False)
+    location = Column(String(255), nullable=True)
+    source = Column(String(50), nullable=True)  # e.g. mock/google
+    is_event_day = Column(Boolean, default=False)
+    is_off_day = Column(Boolean, default=False)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+
+
+class OffDay(Base):
+    __tablename__ = "off_days"
+
+    id = Column(Integer, primary_key=True)
+    date = Column(Date, nullable=False, unique=True)
+    reason = Column(String(255), nullable=True)

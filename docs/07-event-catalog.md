@@ -1,0 +1,18 @@
+# Catálogo de eventos internos
+- VoiceInputCaptured
+- TranscriptGenerated
+- IntentParsed
+- NoteCreated
+- TaskCreated
+- TaskCompleted
+- ReminderScheduled
+- CalendarSynced
+- OffDaySuspected
+- OffDayConfirmed
+- WorkScheduleImported
+- HouseholdTemplateApplied
+- DogCareScheduled
+- PlanGenerated
+- RescheduleSuggested
+- DailyBriefingGenerated
+- FollowUpTriggered

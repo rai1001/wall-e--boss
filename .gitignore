@@ -1,0 +1,37 @@
+# node
+node_modules
+.pnp.*
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+.turbo
+
+# python
+__pycache__/
+.pytest_cache/
+.venv/
+*.pyc
+*.pyo
+*.pyd
+.ruff_cache/
+.mypy_cache/
+
+# env
+.env
+.env.*
+!.env.example
+
+# build
+dist/
+.next/
+coverage/
+
+# editor
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# alembic
+apps/api/alembic/versions/*.pyc

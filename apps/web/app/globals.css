@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color: #0f172a;
+  background: radial-gradient(circle at 15% 20%, #fbbf24 0, transparent 22%), #f6f1eb;
+}
+
+body {
+  min-height: 100vh;
+  font-family: var(--font-sans);
+  background: radial-gradient(circle at 85% 10%, rgba(15, 118, 110, 0.12), transparent 30%), #f6f1eb;
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(15, 23, 42, 0.06);
+}
+
+.card {
+  @apply glass rounded-2xl p-4 shadow-soft;
+}
+
+.title {
+  @apply text-lg font-semibold text-slate-900;
+}
+
+.pill {
+  @apply px-3 py-1 rounded-full text-xs font-semibold;
+}

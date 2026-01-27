@@ -1,0 +1,21 @@
+{
+  "name": "walle",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@9.0.0",
+  "scripts": {
+    "dev": "turbo run dev --parallel",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "format": "turbo run format",
+    "test": "turbo run test",
+    "clean": "turbo run clean || true"
+  },
+  "devDependencies": {
+    "turbo": "^1.12.5",
+    "prettier": "^3.2.5",
+    "eslint": "^8.56.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "@typescript-eslint/eslint-plugin": "^6.21.0"
+  }
+}
