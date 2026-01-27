@@ -10,7 +10,7 @@ Asistente personal de Rai (tuteo, tono familia). Backend FastAPI + Frontend Next
 ## Prerrequisitos
 - Node 20+
 - pnpm 9
-- Python 3.11/3.12 (3.13 no soportado aún por pydantic-core)
+- Python 3.11+ (soporta 3.13 gracias a pydantic-core >=2.41)
 - Docker (compose v2)
 - Opcional Supabase: añade `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY` en tu `.env`
 

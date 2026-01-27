@@ -9,6 +9,7 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 > Nota: usa Python 3.11/3.12; pydantic-core aún no publica wheel estable para 3.13.
+> Actualizado: pydantic 2.12.5 incluye wheels cp313, Python 3.13 ya funciona.
 
 ## Migraciones
 ```bash
