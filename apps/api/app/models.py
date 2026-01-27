@@ -1,7 +1,7 @@
 import enum
-from datetime import datetime, date
+from datetime import datetime, date, timezone
 
-from sqlalchemy import Column, Date, DateTime, Enum, Integer, String, JSON, Boolean
+from sqlalchemy import Column, Date, DateTime, Enum, Integer, String, JSON, Boolean, func
 
 from .db import Base
 
@@ -27,8 +27,8 @@ class Task(Base):
     tags = Column(JSON, default=list)
     due_date = Column(Date, nullable=True)
     status = Column(Enum(TaskStatus), nullable=False, default=TaskStatus.pending)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
 
 
 class Event(Base):
@@ -42,7 +42,7 @@ class Event(Base):
     source = Column(String(50), nullable=True)  # e.g. mock/google
     is_event_day = Column(Boolean, default=False)
     is_off_day = Column(Boolean, default=False)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
 
 
 class OffDay(Base):
