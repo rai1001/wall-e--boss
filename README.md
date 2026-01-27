@@ -13,6 +13,7 @@ Asistente personal de Rai (tuteo, tono familia). Backend FastAPI + Frontend Next
 - Python 3.11+ (soporta 3.13 gracias a pydantic-core >=2.41)
 - Docker (compose v2)
 - Opcional Supabase: añade `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY` en tu `.env`
+- Gemini: define `GEMINI_API_KEY` para transcripción/resumen de reuniones.
 
 ## Comandos rápidos
 - `make dev` — levanta docker-compose y corre turbo dev (api + web)
@@ -21,7 +22,9 @@ Asistente personal de Rai (tuteo, tono familia). Backend FastAPI + Frontend Next
 - `pnpm test` — pytest (API) y tests web (si los hay)
 
 ## Variables de entorno
-Copiar `.env.example` a `.env` y ajustar. Sin claves reales (Google/OpenAI son stubs).
+Copiar `.env.example` a `.env` en raíz (API) y `apps/web/.env.example` a `.env.local` para el frontend. Sin claves reales:
+- API: DB, REDIS, GEMINI_API_KEY.
+- Web: NEXT_PUBLIC_API_BASE_URL, NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY.
 
 ## Documentación
 Documentos en `docs/` y ADRs en `docs/adr/`. Plan actual en `docs/plans/2026-01-27-walle-mvp-plan.md`.
