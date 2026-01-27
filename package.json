@@ -11,6 +11,9 @@
     "test": "turbo run test",
     "clean": "turbo run clean || true"
   },
+  "engines": {
+    "node": ">=20"
+  },
   "devDependencies": {
     "turbo": "^1.12.5",
     "prettier": "^3.2.5",
