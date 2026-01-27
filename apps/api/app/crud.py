@@ -1,12 +1,11 @@
+from datetime import date, datetime
 from typing import List, Optional
 
-from sqlalchemy import select, update, delete
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from datetime import datetime, timedelta, date
-
-from .models import Task, Priority, TaskStatus, Event, OffDay
-from .schemas import TaskCreate, TaskUpdate, EventCreate
+from .models import Event, OffDay, Task
+from .schemas import EventCreate, TaskCreate, TaskUpdate
 
 
 async def list_tasks(session: AsyncSession) -> List[Task]:

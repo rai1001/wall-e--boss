@@ -1,9 +1,10 @@
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
 from app.db import Base, engine, get_session
-from app.routers import health, tasks, calendar, briefing, plan
+from app.routers import briefing, calendar, health, plan, tasks
 
 
 @asynccontextmanager

@@ -1,7 +1,7 @@
 from datetime import date
 from typing import List
 
-from app.models import Task, Priority
+from app.models import Priority, Task
 from app.schemas import BriefingResponse, BriefingSection
 
 

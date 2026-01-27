@@ -1,8 +1,8 @@
 from datetime import date
 from typing import List, Tuple
 
+from app.models import Priority, Task
 from app.schemas import PlanBlock, PlanTodayResponse
-from app.models import Task, Priority
 
 
 def _classify_day(events) -> Tuple[str, bool]:

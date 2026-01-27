@@ -1,4 +1,4 @@
-from datetime import datetime, date, time, timedelta
+from datetime import date, datetime, time, timedelta
 from typing import List
 
 from app.schemas import EventCreate

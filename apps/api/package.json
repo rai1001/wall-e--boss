@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "uvicorn app.main:app --reload --host 0.0.0.0 --port 8000",
-    "lint": "ruff app",
-    "format": "black app",
+    "lint": "python -m ruff app",
+    "format": "python -m black app",
     "test": "pytest"
   }
 }
