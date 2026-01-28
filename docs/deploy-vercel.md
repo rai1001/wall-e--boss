@@ -6,7 +6,7 @@ En Project Settings → Environment Variables (Production y Preview):
 - `NEXT_PUBLIC_SUPABASE_URL` = https://rnhjfiwjhtnbddmnjxsh.supabase.co
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY` = sb_publishable_RBooXLO2_RwiEhTq0zru7w_hPvmmrlr
 - `SUPABASE_SERVICE_ROLE_KEY` = (service role de tu proyecto)
-- `CRON_SECRET` = valor secreto (ej. walle-cron-<random>)
+- `CRON_SECRET` = 884300628ab3ab8667ea7eae709ede26eedadf4e47ddd8ec
 - `WALLE_TIMEZONE` = Europe/Madrid
 - `GOOGLE_CLIENT_ID` = (de Google Cloud)
 - `GOOGLE_CLIENT_SECRET` = (de Google Cloud)
@@ -21,10 +21,14 @@ Scopes mínimos: `https://www.googleapis.com/auth/calendar.readonly`
 (añade `calendar.events` si vas a crear/mover eventos).
 
 ## 3) Cron Jobs en Vercel
-Project Settings → Cron Jobs:
-- `/api/cron/daily-briefing` → `0 7 * * *` (07:00 UTC ≈ 08:00 Madrid en invierno)
-- `/api/cron/followups` → `0 */2 * * *` (cada 2h)
-Añade header `x-cron-secret: <CRON_SECRET>` en cada cron.
+Project Settings → Cron Jobs (Hobby solo permite 1 diario):
+- `/api/cron/daily-briefing` → `0 7 * * *` (07:00 UTC ≈ 08:00 Madrid)
+- `/api/cron/followups` (modo Hobby) → `0 9 * * *` (1 vez al día).  
+Headers ya incluidos en `vercel.json`:
+```
+"headers": { "x-cron-secret": "884300628ab3ab8667ea7eae709ede26eedadf4e47ddd8ec" }
+```
+Si necesitas cada 2h, usa plan Pro o un scheduler externo (GitHub Actions/Uptime cron) que haga `POST` a `/api/cron/followups` con ese header.
 
 ## 4) Migraciones Supabase
 - Local: `supabase db push` (aplica todas las migraciones en `/supabase/migrations`).

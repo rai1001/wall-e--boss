@@ -7,11 +7,17 @@
   "crons": [
     {
       "path": "/api/cron/daily-briefing",
-      "schedule": "0 7 * * *"
+      "schedule": "0 7 * * *",
+      "headers": {
+        "x-cron-secret": "884300628ab3ab8667ea7eae709ede26eedadf4e47ddd8ec"
+      }
     },
     {
       "path": "/api/cron/followups",
-      "schedule": "0 */2 * * *"
+      "schedule": "0 9 * * *",
+      "headers": {
+        "x-cron-secret": "884300628ab3ab8667ea7eae709ede26eedadf4e47ddd8ec"
+      }
     }
   ]
 }
