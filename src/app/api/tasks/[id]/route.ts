@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { getUserOrThrow } from "../../../../lib/auth";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
@@ -11,8 +11,9 @@ const updateSchema = z.object({
   status: z.enum(["TODO", "DOING", "DONE", "SNOOZED"]).optional(),
 });
 
-export async function PATCH(_: Request, { params }: { params: { id: string } }) {
-  const body = await _.json();
+export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const body = await request.json();
   const parsed = updateSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
@@ -22,7 +23,7 @@ export async function PATCH(_: Request, { params }: { params: { id: string } }) 
   const { data, error } = await supabase
     .from("tasks")
     .update(parsed.data)
-    .eq("id", params.id)
+    .eq("id", id)
     .eq("user_id", user.id)
     .select("*")
     .single();
@@ -30,10 +31,11 @@ export async function PATCH(_: Request, { params }: { params: { id: string } }) 
   return NextResponse.json({ task: data });
 }
 
-export async function DELETE(_: Request, { params }: { params: { id: string } }) {
+export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const supabase = createSupabaseServerClient();
   const user = await getUserOrThrow();
-  const { error } = await supabase.from("tasks").delete().eq("id", params.id).eq("user_id", user.id);
+  const { id } = await params;
+  const { error } = await supabase.from("tasks").delete().eq("id", id).eq("user_id", user.id);
   if (error) return NextResponse.json({ error: error.message }, { status: 400 });
   return NextResponse.json({ ok: true });
 }
