@@ -50,7 +50,7 @@ async function syncForUser(userId: string, accessToken: string, supabase: Return
 }
 
 export async function POST(request: Request) {
-  const isCron = request.headers.get("x-cron-secret") === env.CRON_SECRET;
+  const isCron = request.headers.get("x-cron-secret") === env.CRON_SECRET || Boolean(request.headers.get("x-vercel-cron"));
   const supabase = isCron ? createSupabaseServiceClient() : createSupabaseServerClient();
   const user = isCron ? null : await getUserOrThrow().catch(() => null);
 

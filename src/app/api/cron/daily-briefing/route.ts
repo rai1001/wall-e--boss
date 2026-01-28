@@ -7,7 +7,9 @@ import { buildPlans } from "../../../../domain/planEngine";
 import { buildBriefing } from "../../../../domain/briefing";
 
 export async function GET(request: Request) {
-  if (!env.CRON_SECRET || request.headers.get("x-cron-secret") !== env.CRON_SECRET) {
+  const isVercelCron = Boolean(request.headers.get("x-vercel-cron"));
+  const validSecret = env.CRON_SECRET && request.headers.get("x-cron-secret") === env.CRON_SECRET;
+  if (!isVercelCron && !validSecret) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
