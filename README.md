@@ -1,33 +1,61 @@
-# WALL-E Monorepo
+# WALL-E (Supabase + Next.js)
 
-Asistente personal de Rai (tuteo, tono familia). Backend FastAPI + Frontend Next.js (mobile-first). Ver `PROJECT_SPEC.md` para requisitos funcionales obligatorios.
+Asistente personal proactivo para Rai (tuteo, tono familia). Stack obligatorio: **Next.js App Router en Vercel + Supabase (Auth/DB/Storage/Edge)**. Sin FastAPI, sin Docker.
 
 ## Estructura
-- `apps/api`: FastAPI + SQLAlchemy 2.0 + Alembic
-- `apps/web`: Next.js 14 (app router) + Tailwind
-- `packages`: configs compartidas (futuro)
+- `/src/app` — rutas Next.js (App Router). API Routes en `/src/app/api/*`.
+- `/src/domain` — lógica pura (clasificación de día, plan A/B/C, briefing, intent parser).
+- `/src/lib` — clientes Supabase y helpers de env/auth.
+- `/supabase` — migrations y seed.
+- `/docs` — specs y planes (`PROJECT_SPEC.md`, `docs/plans/2026-01-28-supabase-next-rework.md`).
 
 ## Prerrequisitos
-- Node 20+
-- pnpm 9
-- Python 3.11+ (soporta 3.13 gracias a pydantic-core >=2.41)
-- Docker (compose v2)
-- Opcional Supabase: añade `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY` en tu `.env`
-- Gemini: define `GEMINI_API_KEY` para transcripción/resumen de reuniones.
-
-## Comandos rápidos
-- `make dev` — levanta docker-compose y corre turbo dev (api + web)
-- `pnpm dev` — idem usando turbo
-- `pnpm lint` — eslint + ruff
-- `pnpm test` — pytest (API) y tests web (si los hay)
+- Node 20+ con corepack (pnpm).
+- Supabase CLI configurada y proyecto creado.
 
 ## Variables de entorno
-Copiar `.env.example` a `.env` en raíz (API) y `apps/web/.env.example` a `.env.local` para el frontend. Sin claves reales:
-- API: DB, REDIS, GEMINI_API_KEY.
-- Web: NEXT_PUBLIC_API_BASE_URL, NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY.
+Copiar `.env.example` a `.env.local` y rellenar:
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `CRON_SECRET`
+- `WALLE_TIMEZONE=Europe/Madrid`
+- Stubs: `GOOGLE_CLIENT_ID/SECRET`, `OPENAI_API_KEY`
+- Opcional actual: `AI_STUDIO_API_KEY` si usas tu proveedor de IA Studio.
 
-## Documentación
-Documentos en `docs/` y ADRs en `docs/adr/`. Plan actual en `docs/plans/2026-01-27-walle-mvp-plan.md`.
+## Comandos
+- `pnpm install`
+- `pnpm dev` — arranca Next.js (API + UI).
+- `pnpm lint`
+- `pnpm test` — Vitest (plan engine + intent parser).
 
-## Licencia
-Uso interno (no definida).
+## Supabase
+1) `supabase db reset` (o `db push`) para aplicar `/supabase/migrations/20260128000000_base.sql`.
+2) `supabase db seed --file supabase/seed.sql` opcional (datos demo).
+3) Habilitar Auth (email/anon). RLS ya definido para `user_id = auth.uid()`.
+
+## Deploy Vercel
+- Conectar repo y setear env vars anteriores.
+- `vercel.json` incluye crons:
+  - `/api/cron/daily-briefing` 08:00 Europe/Madrid (07:00 UTC invierno).
+  - `/api/cron/followups` cada 2h.
+- Añadir `x-cron-secret` con `CRON_SECRET` en Vercel Scheduler.
+
+## Flujos clave
+- `/api/plan/today` clasifica día (NORMAL/LONG/EXTREME/OFF, “eventos”, “DESCANSO”, hueco sospechoso) y guarda planes A/B/C.
+- `/api/briefing/today` genera briefing FAMILY/WORK.
+- `/api/calendar/sync` inserta mock de eventos (incluye “eventos 100 pax” para probar LONG+buffer).
+- `/api/day/confirm-off` marca DESCANSO.
+- `/api/followups` lista/gestiona nudges VIP.
+- `/api/meetings` crea notas de reunión (stub) y `/api/meetings/export-tasks` convierte action items en tareas.
+- UI: `/app/today` muestra briefing, planes, tareas, banner “¿hoy libras?”, nudges, perros/casa, stub reuniones.
+- UI: vistas `/app/week` y `/app/month` simplificadas; `/app/settings` guarda preferencias (paseos, followups, auto DESCANSO).
+- IA opcional: `AI_STUDIO_API_KEY` (proveedor actual del usuario) para futuras integraciones; dejar `OPENAI_API_KEY` vacío hasta migrar a gpt-4o-mini.
+
+## Tests mínimos
+- `src/domain/__tests__/planEngine.test.ts`
+- `src/domain/__tests__/intent.test.ts`
+
+## Notas
+- IA no obligatoria en V0; deja `OPENAI_API_KEY` vacío y prompts stubs.
+- Perros prioridad permanente (10–15m). Casa plantillas 15/30/60. Máster solo en huecos limpios.

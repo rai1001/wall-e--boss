@@ -1,0 +1,39 @@
+import { NextResponse } from "next/server";
+import { z } from "zod";
+import { getUserOrThrow } from "../../../../lib/auth";
+import { createSupabaseServerClient } from "../../../../lib/supabase/server";
+
+const updateSchema = z.object({
+  title: z.string().min(1).optional(),
+  priority: z.enum(["VIP", "IMPORTANT", "NORMAL"]).optional(),
+  tags: z.array(z.string()).optional(),
+  due_at: z.string().datetime().nullable().optional(),
+  status: z.enum(["TODO", "DOING", "DONE", "SNOOZED"]).optional(),
+});
+
+export async function PATCH(_: Request, { params }: { params: { id: string } }) {
+  const body = await _.json();
+  const parsed = updateSchema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
+  }
+  const supabase = createSupabaseServerClient();
+  const user = await getUserOrThrow();
+  const { data, error } = await supabase
+    .from("tasks")
+    .update(parsed.data)
+    .eq("id", params.id)
+    .eq("user_id", user.id)
+    .select("*")
+    .single();
+  if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+  return NextResponse.json({ task: data });
+}
+
+export async function DELETE(_: Request, { params }: { params: { id: string } }) {
+  const supabase = createSupabaseServerClient();
+  const user = await getUserOrThrow();
+  const { error } = await supabase.from("tasks").delete().eq("id", params.id).eq("user_id", user.id);
+  if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+  return NextResponse.json({ ok: true });
+}
